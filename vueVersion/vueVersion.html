@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>设备资产系统-GS模拟测试工具</title>
+</head>
+
+<body>
+  <div id="app">
+
+    <!-- 标题 -->
+    <h2>设备资产系统-GS模拟测试工具</h2>
+
+    <!-- 切换按钮 -->
+    <span class="btn">
+      <button @click="onCard" :class="{active : isShow}">资产卡片确认</button>
+      <button @click="onReduce" :class="{active : !isShow}">资产减少确认</button>
+    </span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- 管理号码输入框 -->
+    <!-- 资产卡片 -->
+    <div class="input" v-if="isShow">
+      <label for="number">资产卡片管理号码:</label>
+      <input placeholder="请输入管理号码" id="number" type="text" v-model="postNumber">
+      <button @click="onPostCard(postNumber)">提交确认</button>
+    </div>
+    <!-- 资产减少 -->
+    <div class="input" v-else>
+      <label for="number">资产减少管理号码:</label>
+      <input placeholder="请输入管理号码" id="number" type="text">
+      <button>提交确认</button>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- 结果展示 -->
+    <div class="result">
+      <span>确认结果:</span>
+      <span>成功</span>
+    </div>
+    <!-- 错误提示 -->
+    <div class="textArea">
+      <label for="error">错误信息:</label>
+      <textarea placeholder="add multiple lines" readonly="readonly" id="error">1111111111111111111111111111</textarea>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+
+  <script>
+    const axios = require('axios');
+    const app = new Vue({
+      el: '#app',
+      data: {
+        isShow: true,
+        postNumber: ''
+      },
+      methods: {
+        onCard() {
+          this.isShow = true
+        },
+        onReduce() {
+          this.isShow = false
+        },
+        onPostCard(postNumber) {
+          console.log('资产卡片')
+          var api = "'https://sbzccs.cr11g.com.cn/updateStatus/'+ this.postNumber";
+          Axios.get(api).then((response) => {
+            console.log(response.data)
+          }).catch((error) => {
+            console.log(error);
+          })
+        }
+        }
+      },
+      
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <style>
+    #app {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .btn {
+      width: 450px;
+      height: 50px;
+      margin-top: 20px;
+    }
+
+    .btn button {
+      width: 140px;
+      height: 50px;
+      border-radius: 8px;
+      border-width: 0;
+      font-size: 16px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .active {
+      background-color: cornflowerblue;
+    }
+
+    .input {
+      margin-top: 20px;
+    }
+
+    .input input {
+      border-radius: 8%;
+      height: 28px;
+      width: 250px;
+    }
+
+    .input button {
+      height: 30px;
+      background-color: cornflowerblue;
+      border-radius: 8px;
+      border-width: 0;
+      font-size: 16px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 25px;
+      margin-right: 295px;
+    }
+
+    .textArea {
+      margin-top: 30px;
+      margin-right: 20px;
+    }
+
+    .textArea textarea {
+      width: 300px;
+      resize: none;
+      vertical-align: top;
+    }
+  </style>
+</body>
+
+</html>
