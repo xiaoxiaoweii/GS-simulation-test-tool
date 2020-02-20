@@ -3,72 +3,126 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>设备资产系统-GS模拟测试工具</title>
-  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
+    .div-content {
+      display: none;
+    }
 
+    /* .div-content.active {
+      display: block;
+    } */
+    /* .div-error.active {
+      display: block;
+    } */
+    .p-result {
+      display: none;
+    }
+
+    /* .p-result.active {
+      display: block;
+    } */
+    /* .div-error {
+      display: none;
+    } */
+    /* .div-error.active {
+      display: block;
+    } */
+    .active {
+      display: block;
+    }
   </style>
 </head>
 
 <body>
-  <div class="container">
+  <div class="container col-md-offset-4">
     <!-- 标题 -->
     <div class="row">
-      <h3 class="col-lg-4">设备资产系统-GS模拟测试工具</h3>
+      <h3 class="col-md-4">设备资产系统-GS模拟测试工具</h3>
     </div>
-
     <!-- 换行 -->
     <br />
-
     <!-- 按钮 -->
     <div class="row">
-      <div class="col-lg-2">
-        <button type="button" class="btn btn-primary col-md-12">按钮</button>
-      </div>
-      <div class="col-lg-2">
-        <button type="button" class="btn btn-primary col-md-12">按钮</button>
+      <div class="col-md-4 btn">
+        <button type="button" class="btn btn-default btn-lg btn-card" data-id="card">资产卡片确认</button>
+        <button type="button" class="btn btn-default btn-lg btn-reduce" data-id="reduce">资产减少确认</button>
       </div>
     </div>
-
     <!-- 换行 -->
     <br />
-
     <!-- 输入框 -->
-    <div class="row">
-      <div class="col-lg-3" style="font-size: 14px;">
-        <div class="input-group">
-          <span class="input-group-addon">管理号码:</span>
-          <input type="text" class="form-control" placeholder="请输入数字">
+    <div class="div-contents">
+      <!-- 资产卡片确认 -->
+      <div class="row div-content active" id="card">
+        <div class="col-md-3" style="font-size: 14px;">
+          <div class="input-group">
+            <span class="input-group-addon">资产卡片确认:</span>
+            <input type="text" class="form-control" placeholder="请输入数字">
+          </div>
         </div>
+        <button type="button" class="btn-confirm btn-primary col-md-1 ">提交确认</button>
       </div>
-      <button type="button" class="btn btn-primary col-md-1">按钮</button>
+      <!-- 资产减少确认 -->
+      <div class="row div-content" id="reduce">
+        <div class="col-md-3" style="font-size: 14px;">
+          <div class="input-group">
+            <span class="input-group-addon">资产减少确认:</span>
+            <input type="text" class="form-control" placeholder="请输入数字">
+          </div>
+        </div>
+        <button type="button" class="btn-confirm btn-primary col-md-1">提交确认</button>
+      </div>
     </div>
-
     <!-- 换行 -->
     <br />
-
     <!-- 结果 -->
     <div class="row">
-      <div class="col-lg-2">
-        <p class="text-left" style="font-size: 16px;"><span>确认结果:</span> <span>成功</span></p>
+      <div class="col-md-2">
+        <p class="text-left p-result active" style="font-size: 16px;"><span>确认结果:</span> <span>成功</span></p>
+        <p class="text-left p-result" style="font-size: 16px;"><span>确认结果:</span> <span>失败</span></p>
       </div>
     </div>
-
     <!-- 换行 -->
     <br />
-
     <!-- 错误提示 -->
-    <div class="row">
-      <div class="col-lg-1">
+    <div class="row div-error active">
+      <div class="col-md-1">
         <p class="text-left" style="font-size: 14px;">错误信息:</p>
       </div>
-      <div class="col-lg-3">
-        <textarea class="form-control" rows="5" style="resize: none;" ></textarea>
+      <div class="col-md-3">
+        <textarea class="form-control" rows="5" style="resize: none;"></textarea>
+      </div>
     </div>
   </div>
+  <script>
+    $('.btn button').click(function () {
+      $(this).addClass('btn-primary');
+      $(this).siblings().removeClass('btn-primary');
+      var _id = $(this).attr('data-id');
+      $('.div-contents').find('#' + _id).addClass('active').siblings().removeClass('active');
+    });
+    $('.btn-confirm').click(function (number) {
+      $.ajax({
+        type: "get",
+        async: false,
+        url: "'https://sbzccs.cr11g.com.cn/updateStatus/' + number",
+        // dataType: "jsonp",//数据类型为jsonp  
+        // jsonp: "jsonpCallback",//服务端用于接收callback调用的function名的参数 
+        success: function (msg) {
+          // $("#showcontent").text("Result:" + data.result)
+          console.log(msg)
+        },
+        error: function () {
+          console.log('fail');
+        }
+      })
+    })
+
+  </script>
 </body>
 
 </html>
