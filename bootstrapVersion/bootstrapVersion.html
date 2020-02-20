@@ -64,7 +64,6 @@
           <div class="input-group">
             <span class="input-group-addon">管理号码:</span>
             <input type="text" class="form-control" placeholder="请输入数字" name="number" maxlength="20" id="number-input">
-            <span style="display:none;border:0" id="t1">请输入数字</span>
           </div>
         </div>
         <button type="button" class="btn-confirm btn-primary col-md-1 ">提交确认</button>
@@ -99,7 +98,7 @@
         <p class="text-left" style="font-size: 14px;">错误信息:</p>
       </div>
       <div class="col-md-3">
-        <textarea class="form-control error-textarea" rows="5" style="resize: none;"></textarea>
+        <textarea class="form-control error-textarea" rows="5" style="resize: none;" readonly style="background-color: white;"></textarea>
       </div>
     </div>
 
@@ -108,16 +107,19 @@
     reduceUrl = "http://localhost/demo_reduce.js",
     cardUrl = "http://localhost/demo_card.js",
     // 按钮切换
-    $('.btn button').click(function () {
+    $('.btn .btn-card').click(function () {
       $(this).addClass('btn-primary');
       $(this).siblings().removeClass('btn-primary');
       var _id = $(this).attr('data-id');
       $('.div-contents').find('#' + _id).addClass('active').siblings().removeClass('active');
-      if($('.btn btn-card')) {
         url = cardUrl
-      }else (
+    });
+    $('.btn .btn-reduce').click(function () {
+      $(this).addClass('btn-primary');
+      $(this).siblings().removeClass('btn-primary');
+      var _id = $(this).attr('data-id');
+      $('.div-contents').find('#' + _id).addClass('active').siblings().removeClass('active');
         url = reduceUrl
-      )
     });
 
     // 控制输入框只能输入为数字
@@ -130,6 +132,7 @@
     })
     // 请求接口
     $(".btn-confirm").click(function () {
+      number = $(".div-content input[ name='number' ] ").val()
       var me=this;
       $.ajax({
         url: url,
@@ -137,11 +140,11 @@
         dataType: "jsonp", //指定服务器返回的数据类型
         jsonpCallback:'mss',
         success: function (res) {
+          console.log(url),
           data = res
           console.log(res)
           msg = res.msg
           status = res.status
-          console.log(msg)
           if (msg === "该管理号码已财务确认过") {
             $('.p-results').find('#success').addClass('active').siblings().removeClass('active');
             $('.div-error').removeClass('active');
