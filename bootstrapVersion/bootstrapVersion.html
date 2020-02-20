@@ -21,7 +21,9 @@
     .p-result {
       display: none;
     }
-
+    .div-error {
+      display: none;
+    }
     /* .p-result.active {
       display: block;
     } */
@@ -58,20 +60,21 @@
     <div class="div-contents">
       <!-- 资产卡片确认 -->
       <div class="row div-content active" id="card">
-        <div class="col-md-3" style="font-size: 14px;">
+        <div class="col-md-4" style="font-size: 14px;">
           <div class="input-group">
-            <span class="input-group-addon">资产卡片确认:</span>
-            <input type="text" class="form-control" placeholder="请输入数字">
+            <span class="input-group-addon">管理号码:</span>
+            <input type="text" class="form-control" placeholder="请输入数字" name="number" maxlength="20" id="number-input">
+            <span style="display:none;border:0" id="t1">请输入数字</span>
           </div>
         </div>
         <button type="button" class="btn-confirm btn-primary col-md-1 ">提交确认</button>
       </div>
       <!-- 资产减少确认 -->
       <div class="row div-content" id="reduce">
-        <div class="col-md-3" style="font-size: 14px;">
+        <div class="col-md-4" style="font-size: 14px;">
           <div class="input-group">
-            <span class="input-group-addon">资产减少确认:</span>
-            <input type="text" class="form-control" placeholder="请输入数字">
+            <span class="input-group-addon">管理号码:</span>
+            <input type="text" class="form-control" placeholder="请输入数字" name="number" maxlength="20" id="number-input">
           </div>
         </div>
         <button type="button" class="btn-confirm btn-primary col-md-1">提交确认</button>
@@ -81,48 +84,76 @@
     <br />
     <!-- 结果 -->
     <div class="row">
-      <div class="col-md-2">
-        <p class="text-left p-result active" style="font-size: 16px;"><span>确认结果:</span> <span>成功</span></p>
-        <p class="text-left p-result" style="font-size: 16px;"><span>确认结果:</span> <span>失败</span></p>
+      <div class="col-md-2 p-results">
+        </p>
+        <p class="text-left p-result " style="font-size: 16px;" id="success"><span>确认结果:</span> <span>成功</span>
+        </p>
+        <p class="text-left p-result" style="font-size: 16px;" id="fail"><span>确认结果:</span> <span>失败</span></p>
       </div>
     </div>
     <!-- 换行 -->
     <br />
     <!-- 错误提示 -->
-    <div class="row div-error active">
+    <div class="row div-error">
       <div class="col-md-1">
         <p class="text-left" style="font-size: 14px;">错误信息:</p>
       </div>
       <div class="col-md-3">
-        <textarea class="form-control" rows="5" style="resize: none;"></textarea>
+        <textarea class="form-control error-textarea" rows="5" style="resize: none;"></textarea>
       </div>
     </div>
+
   </div>
   <script>
+    reduceUrl = "http://localhost/demo_reduce.js",
+    cardUrl = "http://localhost/demo_card.js",
+    // 按钮切换
     $('.btn button').click(function () {
       $(this).addClass('btn-primary');
       $(this).siblings().removeClass('btn-primary');
       var _id = $(this).attr('data-id');
       $('.div-contents').find('#' + _id).addClass('active').siblings().removeClass('active');
+      if($('.btn btn-card')) {
+        url = cardUrl
+      }else (
+        url = reduceUrl
+      )
     });
-    $('.btn-confirm').click(function (number) {
+
+    // 控制输入框只能输入为数字
+    $("#number-input").keyup(function () {
+      var c = $(this);
+      if (/[^\d]/.test(c.val())) {
+        var temp = c.val().replace(/[^\d]/g, '');
+        $(this).val(temp);
+      }
+    })
+    // 请求接口
+    $(".btn-confirm").click(function () {
+      var me=this;
       $.ajax({
-        type: "get",
-        async: false,
-        url: "'https://sbzccs.cr11g.com.cn/updateStatus/' + number",
-        // dataType: "jsonp",//数据类型为jsonp  
-        // jsonp: "jsonpCallback",//服务端用于接收callback调用的function名的参数 
-        success: function (msg) {
-          // $("#showcontent").text("Result:" + data.result)
+        url: url,
+        type: "GET",
+        dataType: "jsonp", //指定服务器返回的数据类型
+        jsonpCallback:'mss',
+        success: function (res) {
+          data = res
+          console.log(res)
+          msg = res.msg
+          status = res.status
           console.log(msg)
-        },
-        error: function () {
-          console.log('fail');
+          if (msg === "该管理号码已财务确认过") {
+            $('.p-results').find('#success').addClass('active').siblings().removeClass('active');
+            $('.div-error').removeClass('active');
+          }else {
+            $('.p-results').find('#fail').addClass('active').siblings().removeClass('active');
+            $('.div-error').addClass('active');
+            $(".error-textarea").val('msg:' + '  ' + msg +'\nstatus:' + '  ' + status);
+          }
         }
       })
     })
-
   </script>
 </body>
 
-</html>
+</html>n
